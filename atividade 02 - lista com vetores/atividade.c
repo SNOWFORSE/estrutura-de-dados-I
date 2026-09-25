@@ -1,15 +1,6 @@
 #include <stdio.h> 
 #include <string.h>
 
-/*Faça um programa que  implementa uma lista com vetores de strings, 
-conforme o exemplo visto em sala, com as seguintes operações:
-1. Inserir elemento 
-2. Retirar Elemento
-3. Criar Lista
-4. Contar elementos da lista
-5. Exibir o conteúdo da lista
-*/
-
 /*Faça um programa que  implementa uma lista com vetores de strings, conforme o exemplo visto em sala, com as seguintes operações:
 
 1. Inserir elemento 
@@ -21,76 +12,121 @@ conforme o exemplo visto em sala, com as seguintes operações:
 A interface com o usuário deve ser feita pelo programa principal, passando os parâmetros para as funções que implementam as operações sobre a lista.
 Enviar o arquivo fonte em C, funcionando.*/
 
-#include <stdio.h>
 
 #define MaxItens 10
 #define TamItem 20
 typedef char tpLista[MaxItens][TamItem];
 
-void inserirElemento (tpLista item, char *item2){
+void inserirElemento (tpLista lista, char *item2){
 	int i;
-	for(i = 0; i < MaxItens && strlen(item[i]) > 0; i++);
-	if (i < MaxItens)
-	strcpy(item[i], item2);
-	else
-	printf("Lista cheia, não pode inserir");
+	for(i = 0; i < MaxItens && strlen(lista[i]) > 0; i++);
+	if (i < MaxItens) {
+	    strcpy(lista[i], item2);
+	}
+	else {
+	    printf("Lista cheia, não pode inserir");
+	}
 }
 
-void retirarElemento(){}
+void retirarElemento(tpLista lista, char *item2){
+    
+    int i;
+    
+    //se o item lista[i] for diferente ao que o usuario digitou (item2), 
+    //cresce o contador e continua buscando o elemento que o usuario digitou
+    for(i = 0; i < MaxItens && strlen(lista[i]) > 0 && (strcmp(lista[i], item2) != 0); i++);
+    if (i < MaxItens && (strcmp(lista[i], item2) == 0)) {
+        printf("\nItem (%s) foi encontrado e será removido\n", item2);
+        if (i < (MaxItens - 1)) { //verifica se não é o ultimo item da lista
+            for (; i < (MaxItens-1) && strlen(lista[i]) > 0; i++) 
+            //nao tem inicialização do i, pq o i é a exata posição que foi apagada
+            //loop continua enquanto não estourar o limite do vetor e enquanto houver elementos válidos na frente para puxar
+            strcpy(lista[i], lista[i+1]); //essa linha copiamos a linha da frente e puxamos para a de tras
+    }
+   
+        lista[MaxItens-1][0] = '\0'; //atribui o valor vazio ao ultimo elemento, para que possa ter uma nova insercao
+    }
+    else {
+        printf("\nItem (%s) não foi encontrado, verifique se digitou corretamente", item2);
+    }
+}
 
-void criaLista(tpLista l) //aqui estamos criando a lista vazia para poder estar iniciando wessa lista
-{
+void criaLista(tpLista l){ //aqui estamos criando a lista vazia para poder estar iniciando wessa lista
     int i;
     for (i=0; i<MaxItens; i++) {
-    l[i][0] = '\0';
+        l[i][0] = '\0';
+    }
 }
+
+void contarElementos(tpLista contador){
+    int i, j = 0;
+    for (i = 0; i < MaxItens && strlen(contador[i]) > 0; i++) {
+        j++;
+    }
+
+    printf ("A lista tem: %d itens \n", j);
 }
 
-int contarElementos(){}
+void exibirLista(tpLista exibir){
+    int i, j;
+    for (i = 0; i < MaxItens && strlen(exibir[i])>0; i++) {
+        printf ("%s\n", exibir[i]);
+    }
+}
 
-void exibirLista(){}
-
-int main()
-{
+int main() {
+	tpLista listaTop;
+    
+    criaLista (listaTop);
+	
 	int op = 1;
 	
 	do {
-		printf ("Escolha uma das opções abaixo: \n");
+		printf ("\nEscolha uma das opções abaixo: \n");
 		printf ("1 - Inserir elemento\n");
 		printf ("2 - Retirar elemento\n");
-		printf ("3 - Criar lista\n");
-		printf ("4 - Contar elementos da lista\n");
-		printf ("5 - Exibir lista\n");
-		printf ("6 - Sair do programa\n");
+		printf ("3 - Contar elementos da lista\n");
+		printf ("4 - Exibir lista\n");
+		printf ("5 - Sair do programa\n");
 		printf ("\nEscolha: ");
 		scanf ("%d", &op);
-	}
 
-	while (op != 6);
 	
-	switch (op) {
-		
-	case 1: 
-		//inserirElemento();
-	break;	
-	
-	case 2: 
-		//retirarElemento();
-	break;	
-	
-	case 3: 
-		//contarElementos();
-	break;	
-	
-	case 4: 
-		//exibirLista();
-	break;	
-	
-	case 5: 
-		printf ("Saindo do programa");
-	break;	
+    	switch (op) {
+    		
+    	case 1: 
+    	    char novoItem[TamItem]; //criando uma string para que o usuario possa digitar o item que quer add
+                
+                printf("Digite o elemento que deseja inserir: ");
+                scanf("%s", novoItem);
+                
+                inserirElemento(listaTop, novoItem);
+    	break;	
+    	
+    	case 2: 
+    	    char itemRemove[TamItem];
+    	    
+    	    printf ("Digite o elemento que deseja remover: ");
+    	    scanf ("%s", itemRemove);
+    	
+    		retirarElemento(listaTop, itemRemove);
+    	break;	
+    	
+    	case 3: 
+    		contarElementos(listaTop);
+    	break;	
+    	
+    	case 4: 
+    		exibirLista(listaTop); //passando a lista que criamos para que a função saiba onde tem que procurar o que exibir
+    	break;	
+    	
+    	case 5: 
+    		printf ("Saindo do programa");
+    	break;
+    	
+	    }
 	}
+	while (op != 5);
 
 	return 0;
 }
-
