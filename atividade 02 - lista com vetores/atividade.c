@@ -92,8 +92,6 @@ int main() {
 		scanf ("%d", &op);
 
 	
-    	switch (op) {
-    		
     	case 1: 
     	    char novoItem[TamItem]; //criando uma string para que o usuario possa digitar o item que quer add
                 
